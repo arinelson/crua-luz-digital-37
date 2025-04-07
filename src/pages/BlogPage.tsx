@@ -4,6 +4,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from 'react-router-dom';
+import { Share2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Sample blog posts data - would typically come from an API
 const blogPosts = [
@@ -86,7 +88,9 @@ const translations = {
     'Daily Prayer Templates': 'Daily Prayer Templates',
     'Ready-to-use prayer templates for different situations in your life': 'Ready-to-use prayer templates for different situations in your life',
     'readMin': 'min read',
-    'publishedOn': 'Published on'
+    'publishedOn': 'Published on',
+    'sharePost': 'Share',
+    'readMore': 'Read more'
   },
   pt: {
     'How to Understand Jesus Parables': 'Como Entender as Parábolas de Jesus',
@@ -102,9 +106,82 @@ const translations = {
     'Daily Prayer Templates': 'Modelos de Oração Diária',
     'Ready-to-use prayer templates for different situations in your life': 'Modelos de oração prontos para usar em diferentes situações da sua vida',
     'readMin': 'min de leitura',
-    'publishedOn': 'Publicado em'
+    'publishedOn': 'Publicado em',
+    'sharePost': 'Compartilhar',
+    'readMore': 'Leia mais'
   },
-  // Similar translations would be added for other languages
+  es: {
+    'How to Understand Jesus Parables': 'Cómo Entender las Parábolas de Jesús',
+    'Learn the simple approach to understanding the deeper meanings in Jesus parables': 'Aprende el enfoque simple para comprender los significados más profundos en las parábolas de Jesús',
+    'Finding Peace in Prayer': 'Encontrando Paz en la Oración',
+    'Discover how to create a meaningful prayer routine that brings you closer to God': 'Descubre cómo crear una rutina de oración significativa que te acerque a Dios',
+    'When Faith Meets Anxiety': 'Cuando la Fe se Encuentra con la Ansiedad',
+    'Practical ways to use faith as a foundation for managing anxiety and worry': 'Formas prácticas de usar la fe como base para manejar la ansiedad y la preocupación',
+    'Bible Study for Beginners': 'Estudio Bíblico para Principiantes',
+    "A simple approach to understanding the Bible even if you've never read it before": "Un enfoque simple para entender la Biblia incluso si nunca la has leído antes",
+    'Building Faith Community Online': 'Construyendo Comunidad de Fe en Línea',
+    'How to find and nurture spiritual connections in the digital age': 'Cómo encontrar y nutrir conexiones espirituales en la era digital',
+    'Daily Prayer Templates': 'Plantillas de Oración Diaria',
+    'Ready-to-use prayer templates for different situations in your life': 'Plantillas de oración listas para usar en diferentes situaciones de tu vida',
+    'readMin': 'min de lectura',
+    'publishedOn': 'Publicado el',
+    'sharePost': 'Compartir',
+    'readMore': 'Leer más'
+  },
+  de: {
+    'How to Understand Jesus Parables': 'Wie man die Gleichnisse Jesu versteht',
+    'Learn the simple approach to understanding the deeper meanings in Jesus parables': 'Lerne den einfachen Ansatz, um die tiefere Bedeutung in den Gleichnissen Jesu zu verstehen',
+    'Finding Peace in Prayer': 'Frieden im Gebet finden',
+    'Discover how to create a meaningful prayer routine that brings you closer to God': 'Entdecke, wie du eine sinnvolle Gebetsroutine erstellen kannst, die dich Gott näher bringt',
+    'When Faith Meets Anxiety': 'Wenn Glaube auf Angst trifft',
+    'Practical ways to use faith as a foundation for managing anxiety and worry': 'Praktische Wege, um den Glauben als Grundlage für den Umgang mit Angst und Sorgen zu nutzen',
+    'Bible Study for Beginners': 'Bibelstudium für Anfänger',
+    "A simple approach to understanding the Bible even if you've never read it before": "Ein einfacher Ansatz, um die Bibel zu verstehen, auch wenn du sie noch nie gelesen hast",
+    'Building Faith Community Online': 'Aufbau einer Glaubensgemeinschaft online',
+    'How to find and nurture spiritual connections in the digital age': 'Wie man spirituelle Verbindungen im digitalen Zeitalter findet und pflegt',
+    'Daily Prayer Templates': 'Tägliche Gebetsvorlagen',
+    'Ready-to-use prayer templates for different situations in your life': 'Gebrauchsfertige Gebetsvorlagen für verschiedene Situationen in deinem Leben',
+    'readMin': 'min Lesezeit',
+    'publishedOn': 'Veröffentlicht am',
+    'sharePost': 'Teilen',
+    'readMore': 'Weiterlesen'
+  },
+  it: {
+    'How to Understand Jesus Parables': 'Come Comprendere le Parabole di Gesù',
+    'Learn the simple approach to understanding the deeper meanings in Jesus parables': 'Impara l\'approccio semplice per comprendere i significati più profondi nelle parabole di Gesù',
+    'Finding Peace in Prayer': 'Trovare Pace nella Preghiera',
+    'Discover how to create a meaningful prayer routine that brings you closer to God': 'Scopri come creare una routine di preghiera significativa che ti avvicini a Dio',
+    'When Faith Meets Anxiety': 'Quando la Fede Incontra l\'Ansia',
+    'Practical ways to use faith as a foundation for managing anxiety and worry': 'Modi pratici per usare la fede come base per gestire l\'ansia e la preoccupazione',
+    'Bible Study for Beginners': 'Studio della Bibbia per Principianti',
+    "A simple approach to understanding the Bible even if you've never read it before": "Un approccio semplice per capire la Bibbia anche se non l'hai mai letta prima",
+    'Building Faith Community Online': 'Costruire una Comunità di Fede Online',
+    'How to find and nurture spiritual connections in the digital age': 'Come trovare e nutrire connessioni spirituali nell\'era digitale',
+    'Daily Prayer Templates': 'Modelli di Preghiera Quotidiana',
+    'Ready-to-use prayer templates for different situations in your life': 'Modelli di preghiera pronti all\'uso per diverse situazioni della tua vita',
+    'readMin': 'min di lettura',
+    'publishedOn': 'Pubblicato il',
+    'sharePost': 'Condividi',
+    'readMore': 'Leggi di più'
+  },
+  fr: {
+    'How to Understand Jesus Parables': 'Comment Comprendre les Paraboles de Jésus',
+    'Learn the simple approach to understanding the deeper meanings in Jesus parables': 'Apprenez l\'approche simple pour comprendre les significations plus profondes dans les paraboles de Jésus',
+    'Finding Peace in Prayer': 'Trouver la Paix dans la Prière',
+    'Discover how to create a meaningful prayer routine that brings you closer to God': 'Découvrez comment créer une routine de prière significative qui vous rapproche de Dieu',
+    'When Faith Meets Anxiety': 'Quand la Foi Rencontre l\'Anxiété',
+    'Practical ways to use faith as a foundation for managing anxiety and worry': 'Des moyens pratiques d\'utiliser la foi comme fondement pour gérer l\'anxiété et l\'inquiétude',
+    'Bible Study for Beginners': 'Étude de la Bible pour Débutants',
+    "A simple approach to understanding the Bible even if you've never read it before": "Une approche simple pour comprendre la Bible même si vous ne l'avez jamais lue auparavant",
+    'Building Faith Community Online': 'Construire une Communauté de Foi en Ligne',
+    'How to find and nurture spiritual connections in the digital age': 'Comment trouver et nourrir des connexions spirituelles à l\'ère numérique',
+    'Daily Prayer Templates': 'Modèles de Prière Quotidienne',
+    'Ready-to-use prayer templates for different situations in your life': 'Modèles de prière prêts à l\'emploi pour différentes situations de votre vie',
+    'readMin': 'min de lecture',
+    'publishedOn': 'Publié le',
+    'sharePost': 'Partager',
+    'readMore': 'Lire plus'
+  }
 };
 
 const BlogPage: React.FC = () => {
@@ -133,6 +210,9 @@ const BlogPage: React.FC = () => {
       <Helmet>
         <title>{t('blog')} | {language === 'pt' ? 'LUZ CRUA' : language === 'en' ? 'RAW LIGHT' : language === 'de' ? 'ROHES LICHT' : language === 'es' ? 'LUZ CRUDA' : language === 'it' ? 'LUCE CRUDA' : 'LUMIÈRE BRUTE'}</title>
         <meta name="description" content={t('footer')} />
+        <meta property="og:title" content={t('blog')} />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content={t('footer')} />
       </Helmet>
 
       <div className="py-10 md:py-16">
