@@ -28,8 +28,7 @@ export const supabaseService = {
       .select(`
         *,
         post_translations!inner(*),
-        categories:category_id(*),
-        category_translations(*)
+        categories:category_id(*)
       `)
       .eq('post_translations.language', language)
       .eq('featured', true)
@@ -41,7 +40,35 @@ export const supabaseService = {
       return [];
     }
 
-    return (posts || []) as Post[];
+    // Process the data to match our Post type
+    const processedPosts = posts?.map(post => {
+      // Get category ID to fetch translations separately
+      const categoryId = post.categories?.id;
+      
+      return {
+        ...post,
+        category_translations: [] // Initialize with empty array
+      };
+    }) || [];
+
+    // For each post with a category, fetch the category translations
+    if (processedPosts.length > 0) {
+      for (const post of processedPosts) {
+        if (post.categories?.id) {
+          const { data: translations } = await supabase
+            .from('category_translations')
+            .select('*')
+            .eq('category_id', post.categories.id)
+            .eq('language', language);
+            
+          if (translations && translations.length > 0) {
+            post.category_translations = translations;
+          }
+        }
+      }
+    }
+
+    return processedPosts as Post[];
   },
 
   async getRecentPosts(language: string, limit = 2): Promise<Post[]> {
@@ -50,8 +77,7 @@ export const supabaseService = {
       .select(`
         *,
         post_translations!inner(*),
-        categories:category_id(*),
-        category_translations(*)
+        categories:category_id(*)
       `)
       .eq('post_translations.language', language)
       .order('published_at', { ascending: false })
@@ -62,7 +88,32 @@ export const supabaseService = {
       return [];
     }
 
-    return (posts || []) as Post[];
+    // Process the data to match our Post type
+    const processedPosts = posts?.map(post => {
+      return {
+        ...post,
+        category_translations: [] // Initialize with empty array
+      };
+    }) || [];
+
+    // For each post with a category, fetch the category translations
+    if (processedPosts.length > 0) {
+      for (const post of processedPosts) {
+        if (post.categories?.id) {
+          const { data: translations } = await supabase
+            .from('category_translations')
+            .select('*')
+            .eq('category_id', post.categories.id)
+            .eq('language', language);
+            
+          if (translations && translations.length > 0) {
+            post.category_translations = translations;
+          }
+        }
+      }
+    }
+
+    return processedPosts as Post[];
   },
 
   async getPostsByCategory(language: string, categorySlug: string): Promise<Post[]> {
@@ -71,8 +122,7 @@ export const supabaseService = {
       .select(`
         *,
         post_translations!inner(*),
-        categories:category_id!inner(*),
-        category_translations(*)
+        categories:category_id!inner(*)
       `)
       .eq('post_translations.language', language)
       .eq('categories.slug', categorySlug)
@@ -83,7 +133,32 @@ export const supabaseService = {
       return [];
     }
 
-    return (posts || []) as Post[];
+    // Process the data to match our Post type
+    const processedPosts = posts?.map(post => {
+      return {
+        ...post,
+        category_translations: [] // Initialize with empty array
+      };
+    }) || [];
+
+    // For each post with a category, fetch the category translations
+    if (processedPosts.length > 0) {
+      for (const post of processedPosts) {
+        if (post.categories?.id) {
+          const { data: translations } = await supabase
+            .from('category_translations')
+            .select('*')
+            .eq('category_id', post.categories.id)
+            .eq('language', language);
+            
+          if (translations && translations.length > 0) {
+            post.category_translations = translations;
+          }
+        }
+      }
+    }
+
+    return processedPosts as Post[];
   },
 
   async getAllPosts(language: string): Promise<Post[]> {
@@ -92,8 +167,7 @@ export const supabaseService = {
       .select(`
         *,
         post_translations!inner(*),
-        categories:category_id(*),
-        category_translations(*)
+        categories:category_id(*)
       `)
       .eq('post_translations.language', language)
       .order('published_at', { ascending: false });
@@ -103,7 +177,32 @@ export const supabaseService = {
       return [];
     }
 
-    return (posts || []) as Post[];
+    // Process the data to match our Post type
+    const processedPosts = posts?.map(post => {
+      return {
+        ...post,
+        category_translations: [] // Initialize with empty array
+      };
+    }) || [];
+
+    // For each post with a category, fetch the category translations
+    if (processedPosts.length > 0) {
+      for (const post of processedPosts) {
+        if (post.categories?.id) {
+          const { data: translations } = await supabase
+            .from('category_translations')
+            .select('*')
+            .eq('category_id', post.categories.id)
+            .eq('language', language);
+            
+          if (translations && translations.length > 0) {
+            post.category_translations = translations;
+          }
+        }
+      }
+    }
+
+    return processedPosts as Post[];
   },
 
   async getPostBySlug(language: string, slug: string): Promise<Post | null> {
@@ -112,8 +211,7 @@ export const supabaseService = {
       .select(`
         *,
         post_translations!inner(*),
-        categories:category_id(*),
-        category_translations(*)
+        categories:category_id(*)
       `)
       .eq('post_translations.language', language)
       .eq('slug', slug)
@@ -124,7 +222,26 @@ export const supabaseService = {
       return null;
     }
 
-    return post as Post;
+    // Initialize with empty category_translations array
+    const processedPost = {
+      ...post,
+      category_translations: [] as CategoryTranslation[]
+    };
+
+    // If the post has a category, fetch its translations
+    if (post.categories?.id) {
+      const { data: translations } = await supabase
+        .from('category_translations')
+        .select('*')
+        .eq('category_id', post.categories.id)
+        .eq('language', language);
+        
+      if (translations && translations.length > 0) {
+        processedPost.category_translations = translations;
+      }
+    }
+
+    return processedPost as Post;
   },
 
   // Web Stories
@@ -134,8 +251,7 @@ export const supabaseService = {
       .select(`
         *,
         web_story_translations!inner(*),
-        categories:category_id(*),
-        category_translations(*)
+        categories:category_id(*)
       `)
       .eq('web_story_translations.language', language)
       .order('published_at', { ascending: false });
@@ -145,7 +261,32 @@ export const supabaseService = {
       return [];
     }
 
-    return (webStories || []) as WebStory[];
+    // Process the data to match our WebStory type
+    const processedStories = webStories?.map(story => {
+      return {
+        ...story,
+        category_translations: [] // Initialize with empty array
+      };
+    }) || [];
+
+    // For each story with a category, fetch the category translations
+    if (processedStories.length > 0) {
+      for (const story of processedStories) {
+        if (story.categories?.id) {
+          const { data: translations } = await supabase
+            .from('category_translations')
+            .select('*')
+            .eq('category_id', story.categories.id)
+            .eq('language', language);
+            
+          if (translations && translations.length > 0) {
+            story.category_translations = translations;
+          }
+        }
+      }
+    }
+
+    return processedStories as WebStory[];
   },
 
   async getWebStoryBySlug(language: string, slug: string): Promise<WebStory | null> {
@@ -154,8 +295,7 @@ export const supabaseService = {
       .select(`
         *,
         web_story_translations!inner(*),
-        categories:category_id(*),
-        category_translations(*)
+        categories:category_id(*)
       `)
       .eq('web_story_translations.language', language)
       .eq('slug', slug)
@@ -166,6 +306,25 @@ export const supabaseService = {
       return null;
     }
 
-    return webStory as WebStory;
+    // Initialize with empty category_translations array
+    const processedStory = {
+      ...webStory,
+      category_translations: [] as CategoryTranslation[]
+    };
+
+    // If the story has a category, fetch its translations
+    if (webStory.categories?.id) {
+      const { data: translations } = await supabase
+        .from('category_translations')
+        .select('*')
+        .eq('category_id', webStory.categories.id)
+        .eq('language', language);
+        
+      if (translations && translations.length > 0) {
+        processedStory.category_translations = translations;
+      }
+    }
+
+    return processedStory as WebStory;
   }
 };
