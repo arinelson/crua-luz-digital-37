@@ -29,7 +29,7 @@ export const supabaseService = {
         *,
         post_translations!inner(*),
         categories:category_id(*),
-        category_translations:category_id(*)
+        category_translations:categories.category_translations(*)
       `)
       .eq('post_translations.language', language)
       .eq('featured', true)
@@ -41,7 +41,7 @@ export const supabaseService = {
       return [];
     }
 
-    return posts || [];
+    return posts as Post[] || [];
   },
 
   async getRecentPosts(language: string, limit = 2): Promise<Post[]> {
@@ -51,7 +51,7 @@ export const supabaseService = {
         *,
         post_translations!inner(*),
         categories:category_id(*),
-        category_translations:category_id(*)
+        category_translations:categories.category_translations(*)
       `)
       .eq('post_translations.language', language)
       .order('published_at', { ascending: false })
@@ -62,7 +62,7 @@ export const supabaseService = {
       return [];
     }
 
-    return posts || [];
+    return posts as Post[] || [];
   },
 
   async getPostsByCategory(language: string, categorySlug: string): Promise<Post[]> {
@@ -72,7 +72,7 @@ export const supabaseService = {
         *,
         post_translations!inner(*),
         categories:category_id!inner(*),
-        category_translations:category_id(*)
+        category_translations:categories.category_translations(*)
       `)
       .eq('post_translations.language', language)
       .eq('categories.slug', categorySlug)
@@ -83,7 +83,7 @@ export const supabaseService = {
       return [];
     }
 
-    return posts || [];
+    return posts as Post[] || [];
   },
 
   async getAllPosts(language: string): Promise<Post[]> {
@@ -93,7 +93,7 @@ export const supabaseService = {
         *,
         post_translations!inner(*),
         categories:category_id(*),
-        category_translations:category_id(*)
+        category_translations:categories.category_translations(*)
       `)
       .eq('post_translations.language', language)
       .order('published_at', { ascending: false });
@@ -103,7 +103,7 @@ export const supabaseService = {
       return [];
     }
 
-    return posts || [];
+    return posts as Post[] || [];
   },
 
   async getPostBySlug(language: string, slug: string): Promise<Post | null> {
@@ -113,7 +113,7 @@ export const supabaseService = {
         *,
         post_translations!inner(*),
         categories:category_id(*),
-        category_translations:category_id(*)
+        category_translations:categories.category_translations(*)
       `)
       .eq('post_translations.language', language)
       .eq('slug', slug)
@@ -124,7 +124,7 @@ export const supabaseService = {
       return null;
     }
 
-    return post;
+    return post as Post;
   },
 
   // Web Stories
@@ -135,7 +135,7 @@ export const supabaseService = {
         *,
         web_story_translations!inner(*),
         categories:category_id(*),
-        category_translations:category_id(*)
+        category_translations:categories.category_translations(*)
       `)
       .eq('web_story_translations.language', language)
       .order('published_at', { ascending: false });
@@ -145,7 +145,7 @@ export const supabaseService = {
       return [];
     }
 
-    return webStories || [];
+    return webStories as WebStory[] || [];
   },
 
   async getWebStoryBySlug(language: string, slug: string): Promise<WebStory | null> {
@@ -155,7 +155,7 @@ export const supabaseService = {
         *,
         web_story_translations!inner(*),
         categories:category_id(*),
-        category_translations:category_id(*)
+        category_translations:categories.category_translations(*)
       `)
       .eq('web_story_translations.language', language)
       .eq('slug', slug)
@@ -166,6 +166,6 @@ export const supabaseService = {
       return null;
     }
 
-    return webStory;
+    return webStory as WebStory;
   }
 };

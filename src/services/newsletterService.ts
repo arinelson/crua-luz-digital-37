@@ -21,11 +21,11 @@ export const useNewsletterService = () => {
       // Inserir na tabela de assinantes
       const { error } = await supabase
         .from('newsletter_subscribers')
-        .insert([{
+        .insert({
           email,
           language,
           ip_address
-        }]);
+        });
 
       if (error) {
         // Se o email já existe (violação de uniqueness)

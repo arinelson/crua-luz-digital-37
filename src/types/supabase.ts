@@ -1,3 +1,4 @@
+
 export interface Category {
   id: string;
   slug: string;
@@ -11,6 +12,23 @@ export interface CategoryTranslation {
   language: string;
   name: string;
   created_at: string;
+}
+
+export interface Contact {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  created_at: string;
+}
+
+export interface NewsletterSubscriber {
+  id: string;
+  email: string;
+  language: string;
+  ip_address: string | null;
+  subscribed_at: string;
 }
 
 export interface Post {
