@@ -29,11 +29,10 @@ export const supabaseService = {
         *,
         post_translations!inner(*),
         categories:category_id(*),
-        category_translations:categories.id(*)
+        category_translations:category_id(*)
       `)
       .eq('post_translations.language', language)
       .eq('featured', true)
-      .eq('category_translations.language', language)
       .order('published_at', { ascending: false })
       .limit(limit);
 
@@ -52,10 +51,9 @@ export const supabaseService = {
         *,
         post_translations!inner(*),
         categories:category_id(*),
-        category_translations:categories.id(*)
+        category_translations:category_id(*)
       `)
       .eq('post_translations.language', language)
-      .eq('category_translations.language', language)
       .order('published_at', { ascending: false })
       .limit(limit);
 
@@ -74,11 +72,10 @@ export const supabaseService = {
         *,
         post_translations!inner(*),
         categories:category_id!inner(*),
-        category_translations:categories.id(*)
+        category_translations:category_id(*)
       `)
       .eq('post_translations.language', language)
       .eq('categories.slug', categorySlug)
-      .eq('category_translations.language', language)
       .order('published_at', { ascending: false });
 
     if (error) {
@@ -96,10 +93,9 @@ export const supabaseService = {
         *,
         post_translations!inner(*),
         categories:category_id(*),
-        category_translations:categories.id(*)
+        category_translations:category_id(*)
       `)
       .eq('post_translations.language', language)
-      .eq('category_translations.language', language)
       .order('published_at', { ascending: false });
 
     if (error) {
@@ -111,17 +107,16 @@ export const supabaseService = {
   },
 
   async getPostBySlug(language: string, slug: string): Promise<Post | null> {
-    const { data: posts, error } = await supabase
+    const { data: post, error } = await supabase
       .from('posts')
       .select(`
         *,
         post_translations!inner(*),
         categories:category_id(*),
-        category_translations:categories.id(*)
+        category_translations:category_id(*)
       `)
       .eq('post_translations.language', language)
       .eq('slug', slug)
-      .eq('category_translations.language', language)
       .single();
 
     if (error) {
@@ -129,7 +124,7 @@ export const supabaseService = {
       return null;
     }
 
-    return posts;
+    return post;
   },
 
   // Web Stories
@@ -140,10 +135,9 @@ export const supabaseService = {
         *,
         web_story_translations!inner(*),
         categories:category_id(*),
-        category_translations:categories.id(*)
+        category_translations:category_id(*)
       `)
       .eq('web_story_translations.language', language)
-      .eq('category_translations.language', language)
       .order('published_at', { ascending: false });
 
     if (error) {
@@ -161,11 +155,10 @@ export const supabaseService = {
         *,
         web_story_translations!inner(*),
         categories:category_id(*),
-        category_translations:categories.id(*)
+        category_translations:category_id(*)
       `)
       .eq('web_story_translations.language', language)
       .eq('slug', slug)
-      .eq('category_translations.language', language)
       .single();
 
     if (error) {

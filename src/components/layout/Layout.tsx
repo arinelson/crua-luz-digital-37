@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import { Progress } from "@/components/ui/progress";
+import NewsletterPopup from '@/components/NewsletterPopup';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -78,6 +79,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </Suspense>
         <Footer />
       </div>
+
+      {/* Newsletter Popup */}
+      <NewsletterPopup />
     </>
   );
 };

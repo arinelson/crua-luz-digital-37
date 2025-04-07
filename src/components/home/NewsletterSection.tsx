@@ -1,38 +1,30 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useToast } from '@/hooks/use-toast';
+import { useNewsletterService } from '@/services/newsletterService';
 
 const NewsletterSection: React.FC = () => {
   const { language, t } = useLanguage();
-  const { toast } = useToast();
   const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { subscribeToNewsletter } = useNewsletterService();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // This would typically send the email to your newsletter service
-    console.log('Subscribing email:', email);
+    if (!email) return;
     
-    // Show a success toast
-    toast({
-      title: language === 'pt' ? 'Inscrição realizada com sucesso!' :
-             language === 'en' ? 'Successfully subscribed!' :
-             language === 'de' ? 'Erfolgreich abonniert!' :
-             language === 'es' ? '¡Suscripción exitosa!' :
-             language === 'it' ? 'Iscrizione effettuata con successo!' :
-             'Inscription réussie !',
-      description: language === 'pt' ? 'Obrigado por se inscrever na nossa newsletter.' :
-                   language === 'en' ? 'Thank you for subscribing to our newsletter.' :
-                   language === 'de' ? 'Vielen Dank für das Abonnieren unseres Newsletters.' :
-                   language === 'es' ? 'Gracias por suscribirte a nuestro boletín.' :
-                   language === 'it' ? 'Grazie per esserti iscritto alla nostra newsletter.' :
-                   'Merci de vous être inscrit à notre newsletter.',
-      variant: 'default',
-    });
+    setIsLoading(true);
     
-    // Clear the form
-    setEmail('');
+    try {
+      // Chamar o serviço de newsletter
+      await subscribeToNewsletter(email, language);
+      
+      // Limpar o formulário
+      setEmail('');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,11 +49,16 @@ const NewsletterSection: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={isLoading}
             />
             <button
               type="submit"
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-md bg-primary px-4 py-2 text-base font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-md bg-primary px-4 py-2 text-base font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading}
             >
+              {isLoading ? (
+                <span className="inline-block w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin mr-2"></span>
+              ) : null}
               {t('subscribe')}
             </button>
           </form>

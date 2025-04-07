@@ -59,6 +59,57 @@ export type Database = {
           },
         ]
       }
+      contacts: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          subject: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          subject: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          subject?: string
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          email: string
+          id: string
+          ip_address: string | null
+          language: string
+          subscribed_at: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          ip_address?: string | null
+          language: string
+          subscribed_at?: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          ip_address?: string | null
+          language?: string
+          subscribed_at?: string
+        }
+        Relationships: []
+      }
       post_translations: {
         Row: {
           content: string | null

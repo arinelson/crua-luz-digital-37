@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { useContactService, ContactFormData } from '@/services/contactService';
 
 const translations = {
   en: {
@@ -46,6 +47,14 @@ const translations = {
 
 const ContactPage: React.FC = () => {
   const { language, t } = useLanguage();
+  const { submitContact } = useContactService();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
   
   // Translate content based on language
   const translate = (key: string) => {
@@ -53,10 +62,28 @@ const ContactPage: React.FC = () => {
     return langTranslations[key as keyof typeof langTranslations] || key;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Form submission logic would go here
-    console.log('Form submitted');
+    setIsLoading(true);
+    
+    try {
+      await submitContact(formData, language);
+      
+      // Limpar formulário após envio bem-sucedido
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -89,29 +116,66 @@ const ContactPage: React.FC = () => {
                       <label htmlFor="name" className="text-sm font-medium">
                         {translate('formName')}
                       </label>
-                      <Input id="name" required />
+                      <Input 
+                        id="name" 
+                        value={formData.name}
+                        onChange={handleChange}
+                        required 
+                        disabled={isLoading}
+                      />
                     </div>
                     <div className="space-y-2">
                       <label htmlFor="email" className="text-sm font-medium">
                         {translate('formEmail')}
                       </label>
-                      <Input id="email" type="email" required />
+                      <Input 
+                        id="email" 
+                        type="email" 
+                        value={formData.email}
+                        onChange={handleChange}
+                        required 
+                        disabled={isLoading}
+                      />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <label htmlFor="subject" className="text-sm font-medium">
                       {translate('formSubject')}
                     </label>
-                    <Input id="subject" required />
+                    <Input 
+                      id="subject" 
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required 
+                      disabled={isLoading}
+                    />
                   </div>
                   <div className="space-y-2">
                     <label htmlFor="message" className="text-sm font-medium">
                       {translate('formMessage')}
                     </label>
-                    <Textarea id="message" rows={5} required />
+                    <Textarea 
+                      id="message" 
+                      rows={5} 
+                      value={formData.message}
+                      onChange={handleChange}
+                      required 
+                      disabled={isLoading}
+                    />
                   </div>
-                  <Button type="submit" className="w-full sm:w-auto">
-                    {translate('formSubmit')}
+                  <Button 
+                    type="submit" 
+                    className="w-full sm:w-auto"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="inline-block w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin mr-2"></span>
+                        {translate('formSubmit')}
+                      </>
+                    ) : (
+                      translate('formSubmit')
+                    )}
                   </Button>
                 </form>
               </CardContent>

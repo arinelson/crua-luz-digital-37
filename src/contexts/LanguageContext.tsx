@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useGeoLocation } from '@/hooks/useGeoLocation';
 
 export type Language = 'pt' | 'en' | 'es' | 'de' | 'fr' | 'it';
 
@@ -170,6 +171,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const location = useLocation();
   const [language, setLanguageState] = useState<Language>(defaultLanguage);
   const [translations, setTranslations] = useState(translationTable[defaultLanguage]);
+  const [hasManuallySelectedLanguage, setHasManuallySelectedLanguage] = useState<boolean>(
+    !!localStorage.getItem('manually_selected_language')
+  );
+  
+  // Use our geolocation hook
+  const { detectedLanguage, loading: geoLoading } = useGeoLocation();
 
   useEffect(() => {
     // Check URL for language code
@@ -180,20 +187,31 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       setLanguageState(langFromUrl);
       setTranslations(translationTable[langFromUrl]);
     } else {
-      // If no valid language in URL, redirect to default language
-      const currentPath = location.pathname === '/' ? '' : location.pathname;
-      navigate(`/${defaultLanguage}${currentPath}`);
+      // Se o usuário não selecionou manualmente um idioma e temos um idioma detectado
+      if (!hasManuallySelectedLanguage && detectedLanguage && !geoLoading) {
+        // Redirecionar para o idioma detectado por geolocalização
+        const currentPath = location.pathname === '/' ? '' : location.pathname;
+        navigate(`/${detectedLanguage}${currentPath}`);
+      } else {
+        // Se não conseguimos detectar ou o usuário já escolheu, usar o idioma padrão
+        const currentPath = location.pathname === '/' ? '' : location.pathname;
+        navigate(`/${defaultLanguage}${currentPath}`);
+      }
     }
-  }, [location.pathname, navigate]);
+  }, [location.pathname, navigate, detectedLanguage, geoLoading, hasManuallySelectedLanguage]);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     setTranslations(translationTable[lang]);
     
-    // Update URL to reflect language change
+    // Atualizar URL para refletir a mudança de idioma
     const currentPath = location.pathname;
     const pathWithoutLang = currentPath.split('/').slice(2).join('/');
     navigate(`/${lang}/${pathWithoutLang}`);
+    
+    // Marcar que o usuário selecionou manualmente um idioma
+    localStorage.setItem('manually_selected_language', 'true');
+    setHasManuallySelectedLanguage(true);
   };
 
   const t = (key: string): string => {
