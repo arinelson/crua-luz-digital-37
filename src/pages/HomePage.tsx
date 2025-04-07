@@ -5,6 +5,7 @@ import FeaturedArticles from '../components/home/FeaturedArticles';
 import CategoriesSection from '../components/home/CategoriesSection';
 import RecentArticles from '../components/home/RecentArticles';
 import NewsletterSection from '../components/home/NewsletterSection';
+import FeaturedWebStories from '../components/home/FeaturedWebStories';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -81,6 +82,7 @@ const HomePage: React.FC = () => {
       <FeaturedArticles />
       <CategoriesSection />
       <RecentArticles />
+      <FeaturedWebStories />
       <NewsletterSection />
     </>
   );
