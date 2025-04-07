@@ -9,6 +9,17 @@
     <meta name="author" content="Luz Crua" />
     <meta name="keywords" content="Deus, Jesus, fé, Bíblia, ensinamento cristão, espiritualidade, oração, conexão espiritual" />
 
+    <!-- Preconnect to required origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    
+    <!-- Google Fonts with display swap for better performance -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap">
+    </noscript>
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://luz-crua.netlify.app/" />
@@ -39,6 +50,21 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    
+    <!-- Critical CSS to prevent render blocking -->
+    <style>
+      /* Minimal styles needed for initial render */
+      body {
+        font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        margin: 0;
+        background-color: hsl(260, 33%, 98%);
+        color: hsl(260, 10%, 15%);
+      }
+      .dark {
+        background-color: hsl(0, 0%, 7%);
+        color: hsl(255, 10%, 90%);
+      }
+    </style>
   </head>
 
   <body>
