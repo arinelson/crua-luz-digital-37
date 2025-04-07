@@ -18,6 +18,7 @@ import SocialMediaPage from "./pages/SocialMediaPage";
 import CategoryPage from "./pages/CategoryPage";
 import BlogPostPage from "./pages/BlogPostPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import { InitializeData } from "./components/InitializeData";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
     <HelmetProvider>
       <BrowserRouter>
         <ThemeProvider>
+          <InitializeData />
           <Routes>
             {/* Redirect from root to default language */}
             <Route path="/" element={<Navigate to="/pt" replace />} />

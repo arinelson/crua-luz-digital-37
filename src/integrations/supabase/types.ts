@@ -9,7 +9,202 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      categories: {
+        Row: {
+          created_at: string
+          id: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      category_translations: {
+        Row: {
+          category_id: string
+          created_at: string
+          id: string
+          language: string
+          name: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          id?: string
+          language: string
+          name: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          id?: string
+          language?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_translations_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_translations: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: string
+          language: string
+          post_id: string
+          summary: string
+          title: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          language: string
+          post_id: string
+          summary: string
+          title: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          language?: string
+          post_id?: string
+          summary?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_translations_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          featured: boolean
+          id: string
+          image_url: string
+          published_at: string
+          read_time: number
+          slug: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          featured?: boolean
+          id?: string
+          image_url: string
+          published_at?: string
+          read_time: number
+          slug: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          featured?: boolean
+          id?: string
+          image_url?: string
+          published_at?: string
+          read_time?: number
+          slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      web_stories: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          id: string
+          image_url: string
+          published_at: string
+          slug: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          published_at?: string
+          slug: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          published_at?: string
+          slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "web_stories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      web_story_translations: {
+        Row: {
+          created_at: string
+          id: string
+          language: string
+          title: string
+          web_story_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          language: string
+          title: string
+          web_story_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          language?: string
+          title?: string
+          web_story_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "web_story_translations_web_story_id_fkey"
+            columns: ["web_story_id"]
+            isOneToOne: false
+            referencedRelation: "web_stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

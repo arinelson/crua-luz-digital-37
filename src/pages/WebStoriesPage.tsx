@@ -1,90 +1,49 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Link } from 'react-router-dom';
-
-// Sample web stories data
-const webStories = [
-  {
-    id: 1,
-    titleKey: 'Finding Inner Peace Through Prayer',
-    imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-    date: '2025-03-20',
-    category: 'connectionWithGod',
-    slug: 'finding-inner-peace'
-  },
-  {
-    id: 2,
-    titleKey: '5 Teachings of Jesus That Changed My Life',
-    imageUrl: 'https://images.unsplash.com/photo-1469041797191-50ace28483c3',
-    date: '2025-03-15',
-    category: 'teachingsOfJesus',
-    slug: '5-teachings-jesus'
-  },
-  {
-    id: 3,
-    titleKey: 'How to Overcome Anxiety with Faith',
-    imageUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085',
-    date: '2025-03-10',
-    category: 'overcomingChallenges',
-    slug: 'overcome-anxiety-faith'
-  },
-  {
-    id: 4,
-    titleKey: 'Understanding Psalm 23 in Modern Context',
-    imageUrl: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9',
-    date: '2025-03-05',
-    category: 'understandingBible',
-    slug: 'psalm-23-modern-context'
-  },
-  {
-    id: 5,
-    titleKey: 'Building a Spiritual Community Online',
-    imageUrl: 'https://images.unsplash.com/photo-1472396961693-142e6e269027',
-    date: '2025-02-28',
-    category: 'communityAndCommunion',
-    slug: 'spiritual-community-online'
-  },
-  {
-    id: 6,
-    titleKey: 'Simple Daily Prayer Routine',
-    imageUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e',
-    date: '2025-02-25',
-    category: 'practicalResources',
-    slug: 'daily-prayer-routine'
-  }
-];
-
-// Translation keys for web stories
-const translations = {
-  en: {
-    'Finding Inner Peace Through Prayer': 'Finding Inner Peace Through Prayer',
-    '5 Teachings of Jesus That Changed My Life': '5 Teachings of Jesus That Changed My Life',
-    'How to Overcome Anxiety with Faith': 'How to Overcome Anxiety with Faith',
-    'Understanding Psalm 23 in Modern Context': 'Understanding Psalm 23 in Modern Context',
-    'Building a Spiritual Community Online': 'Building a Spiritual Community Online',
-    'Simple Daily Prayer Routine': 'Simple Daily Prayer Routine'
-  },
-  pt: {
-    'Finding Inner Peace Through Prayer': 'Encontrando Paz Interior Através da Oração',
-    '5 Teachings of Jesus That Changed My Life': '5 Ensinamentos de Jesus Que Mudaram Minha Vida',
-    'How to Overcome Anxiety with Faith': 'Como Superar a Ansiedade com Fé',
-    'Understanding Psalm 23 in Modern Context': 'Entendendo o Salmo 23 no Contexto Moderno',
-    'Building a Spiritual Community Online': 'Construindo uma Comunidade Espiritual Online',
-    'Simple Daily Prayer Routine': 'Rotina Simples de Oração Diária'
-  },
-  // Similar translations would be added for other languages
-};
+import { supabaseService } from '@/services/supabaseService';
+import { WebStory } from '@/types/supabase';
+import { useToast } from '@/hooks/use-toast';
 
 const WebStoriesPage: React.FC = () => {
   const { language, t } = useLanguage();
+  const [webStories, setWebStories] = useState<WebStory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   
-  // Translate content based on language
-  const translate = (key: string) => {
-    const langTranslations = translations[language as keyof typeof translations] || translations.en;
-    return langTranslations[key as keyof typeof langTranslations] || key;
+  useEffect(() => {
+    const fetchWebStories = async () => {
+      try {
+        setLoading(true);
+        const stories = await supabaseService.getAllWebStories(language);
+        setWebStories(stories);
+      } catch (error) {
+        console.error('Error fetching web stories:', error);
+        toast({
+          title: "Erro ao carregar web stories",
+          description: "Não foi possível carregar as web stories",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWebStories();
+  }, [language, toast]);
+  
+  // Format date based on locale
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString(
+      language === 'en' ? 'en-US' : 
+      language === 'pt' ? 'pt-BR' : 
+      language === 'es' ? 'es-ES' : 
+      language === 'de' ? 'de-DE' : 
+      language === 'it' ? 'it-IT' : 'fr-FR'
+    );
   };
 
   return (
@@ -104,47 +63,66 @@ const WebStoriesPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {webStories.map((story) => (
-              <Link 
-                key={story.id}
-                to={`/${language}/web-stories/${story.slug}`} 
-                className="group block"
-              >
-                <Card className="overflow-hidden h-full hover:shadow-md transition-shadow duration-300">
-                  <div className="relative aspect-[9/16] overflow-hidden">
-                    <img 
-                      src={story.imageUrl} 
-                      alt={translate(story.titleKey)} 
-                      className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
-                      <div>
-                        <div className="text-sm font-medium text-primary-foreground mb-2">
-                          {t(story.category)}
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} className="animate-pulse">
+                  <Card className="overflow-hidden h-full">
+                    <div className="relative aspect-[9/16] overflow-hidden">
+                      <div className="object-cover w-full h-full bg-gray-300 dark:bg-gray-700"></div>
+                    </div>
+                    <CardFooter className="flex justify-between">
+                      <div className="h-4 bg-gray-300 dark:bg-gray-700 w-1/3"></div>
+                    </CardFooter>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          ) : webStories.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {webStories.map((story) => (
+                <Link 
+                  key={story.id}
+                  to={`/${language}/web-stories/${story.slug}`} 
+                  className="group block"
+                >
+                  <Card className="overflow-hidden h-full hover:shadow-md transition-shadow duration-300">
+                    <div className="relative aspect-[9/16] overflow-hidden">
+                      <img 
+                        src={story.image_url} 
+                        alt={story.web_story_translations?.[0]?.title || ''} 
+                        className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <div>
+                          <div className="text-sm font-medium text-primary-foreground mb-2">
+                            {story.category_translations?.[0]?.name || ''}
+                          </div>
+                          <h3 className="text-lg font-semibold text-white">
+                            {story.web_story_translations?.[0]?.title || ''}
+                          </h3>
                         </div>
-                        <h3 className="text-lg font-semibold text-white">
-                          {translate(story.titleKey)}
-                        </h3>
                       </div>
                     </div>
-                  </div>
-                  <CardFooter className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      {new Date(story.date).toLocaleDateString(
-                        language === 'en' ? 'en-US' : 
-                        language === 'pt' ? 'pt-BR' : 
-                        language === 'es' ? 'es-ES' : 
-                        language === 'de' ? 'de-DE' : 
-                        language === 'it' ? 'it-IT' : 'fr-FR'
-                      )}
-                    </span>
-                  </CardFooter>
-                </Card>
-              </Link>
-            ))}
-          </div>
+                    <CardFooter className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">
+                        {formatDate(story.published_at)}
+                      </span>
+                    </CardFooter>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-muted-foreground py-12">
+              {language === 'pt' ? 'Nenhuma web story encontrada' : 
+               language === 'en' ? 'No web stories found' :
+               language === 'de' ? 'Keine Web-Stories gefunden' :
+               language === 'es' ? 'No se encontraron web stories' :
+               language === 'it' ? 'Nessuna web story trovata' : 'Aucune web story trouvée'}
+            </div>
+          )}
         </div>
       </div>
     </>
