@@ -1,8 +1,8 @@
-
 export interface Category {
   id: string;
   slug: string;
   created_at: string;
+  category_translations?: CategoryTranslation[];
 }
 
 export interface CategoryTranslation {
@@ -23,7 +23,12 @@ export interface Post {
   featured: boolean;
   created_at: string;
   
-  // Campos virtuais (não armazenados no banco)
+  // Fields returned by joins
+  post_translations?: PostTranslation[];
+  categories?: Category;
+  category_translations?: CategoryTranslation[];
+  
+  // Legacy fields (keeping for backward compatibility)
   translations?: PostTranslation[];
   category?: Category;
   categoryTranslation?: CategoryTranslation;
@@ -47,7 +52,12 @@ export interface WebStory {
   published_at: string;
   created_at: string;
   
-  // Campos virtuais (não armazenados no banco)
+  // Fields returned by joins
+  web_story_translations?: WebStoryTranslation[];
+  categories?: Category;
+  category_translations?: CategoryTranslation[];
+  
+  // Legacy fields (keeping for backward compatibility)
   translations?: WebStoryTranslation[];
   category?: Category;
   categoryTranslation?: CategoryTranslation;
