@@ -19,6 +19,12 @@ import CategoryPage from "./pages/CategoryPage";
 import BlogPostPage from "./pages/BlogPostPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import { InitializeData } from "./components/InitializeData";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminPosts from "./pages/admin/AdminPosts";
+import AdminCreatePost from "./pages/admin/AdminCreatePost";
+import AdminEditPost from "./pages/admin/AdminEditPost";
+import AdminWebStories from "./pages/admin/AdminWebStories";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +37,24 @@ const App = () => (
           <Routes>
             {/* Redirect from root to default language */}
             <Route path="/" element={<Navigate to="/pt" replace />} />
+            
+            {/* Admin routes */}
+            <Route path="/admin/*" element={
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <AdminLayout>
+                  <Routes>
+                    <Route path="/" element={<AdminDashboard />} />
+                    <Route path="/posts" element={<AdminPosts />} />
+                    <Route path="/posts/create" element={<AdminCreatePost />} />
+                    <Route path="/posts/edit/:postId" element={<AdminEditPost />} />
+                    <Route path="/web-stories" element={<AdminWebStories />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                  </Routes>
+                </AdminLayout>
+              </TooltipProvider>
+            } />
             
             {/* Language routes */}
             <Route path="/:lang/*" element={
