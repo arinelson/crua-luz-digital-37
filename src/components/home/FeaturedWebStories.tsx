@@ -19,11 +19,12 @@ const FeaturedWebStories: React.FC = () => {
         setLoading(true);
         const stories = await supabaseService.getAllWebStories(language);
         setWebStories(stories.slice(0, 3)); // Get only the first 3 stories
+        console.log('Fetched web stories:', stories);
       } catch (error) {
         console.error('Error fetching web stories:', error);
         toast({
-          title: "Erro ao carregar web stories",
-          description: "Não foi possível carregar as web stories em destaque",
+          title: "Error loading web stories",
+          description: "Could not load featured web stories",
           variant: "destructive"
         });
       } finally {
@@ -47,6 +48,30 @@ const FeaturedWebStories: React.FC = () => {
       'it-IT', 
       options
     );
+  };
+
+  const getTitle = () => {
+    switch(language) {
+      case 'pt': return 'Web Stories';
+      case 'en': return 'Web Stories';
+      case 'de': return 'Web Stories';
+      case 'es': return 'Web Stories';
+      case 'it': return 'Web Stories';
+      case 'fr': return 'Web Stories';
+      default: return 'Web Stories';
+    }
+  };
+
+  const getViewAllText = () => {
+    switch(language) {
+      case 'pt': return 'Ver todas as web stories';
+      case 'en': return 'View all web stories';
+      case 'de': return 'Alle Web Stories ansehen';
+      case 'es': return 'Ver todas las web stories';
+      case 'it': return 'Visualizza tutti i web stories';
+      case 'fr': return 'Voir toutes les web stories';
+      default: return 'View all web stories';
+    }
   };
 
   if (loading) {
@@ -82,14 +107,7 @@ const FeaturedWebStories: React.FC = () => {
     <section className="py-16 bg-accent/5">
       <div className="container-content">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold">
-            {language === 'pt' && 'Web Stories'}
-            {language === 'en' && 'Web Stories'}
-            {language === 'de' && 'Web Stories'}
-            {language === 'es' && 'Web Stories'}
-            {language === 'it' && 'Web Stories'}
-            {language === 'fr' && 'Web Stories'}
-          </h2>
+          <h2 className="text-3xl font-bold">{getTitle()}</h2>
           <div className="w-24 h-1 bg-primary mx-auto mt-4"></div>
         </div>
         
@@ -135,12 +153,7 @@ const FeaturedWebStories: React.FC = () => {
             to={`/${language}/web-stories`}
             className="inline-flex items-center justify-center whitespace-nowrap rounded-md border border-input bg-background px-6 py-3 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
-            {language === 'pt' && 'Ver todas as web stories'}
-            {language === 'en' && 'View all web stories'}
-            {language === 'de' && 'Alle Web Stories ansehen'}
-            {language === 'es' && 'Ver todas las web stories'}
-            {language === 'it' && 'Visualizza tutti i web stories'}
-            {language === 'fr' && 'Voir toutes les web stories'}
+            {getViewAllText()}
           </Link>
         </div>
       </div>
