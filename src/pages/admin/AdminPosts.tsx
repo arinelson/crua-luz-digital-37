@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
@@ -10,35 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
-
-interface PostTranslation {
-  id: string;
-  post_id: string;
-  language: string;
-  title: string;
-  summary: string;
-  content: string;
-}
-
-interface CategoryTranslation {
-  id: string;
-  category_id: string;
-  language: string;
-  name: string;
-}
-
-interface Post {
-  id: string;
-  slug: string;
-  image_url: string;
-  category_id: string;
-  read_time: number;
-  featured: boolean;
-  created_at: string;
-  published_at: string;
-  post_translations: PostTranslation[];
-  category_translations: CategoryTranslation[];
-}
+import { Post, CategoryTranslation } from '@/types/supabase';
 
 const AdminPosts: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -63,7 +34,15 @@ const AdminPosts: React.FC = () => {
       
       if (error) throw error;
       
-      setPosts(data || []);
+      // Transform the data to ensure category_translations is always an array
+      const transformedData = data?.map(post => ({
+        ...post,
+        category_translations: Array.isArray(post.category_translations) 
+          ? post.category_translations 
+          : [] as CategoryTranslation[]
+      })) || [];
+      
+      setPosts(transformedData as Post[]);
     } catch (error) {
       console.error('Error fetching posts:', error);
       toast({
