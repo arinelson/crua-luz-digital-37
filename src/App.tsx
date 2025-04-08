@@ -35,26 +35,55 @@ const App = () => (
         <ThemeProvider>
           <InitializeData />
           <Routes>
-            {/* Redirect from root to default language */}
-            <Route path="/" element={<Navigate to="/pt" replace />} />
-            
             {/* Admin routes */}
-            <Route path="/admin/*" element={
+            <Route path="/admin" element={
               <TooltipProvider>
                 <Toaster />
                 <Sonner />
                 <AdminLayout>
-                  <Routes>
-                    <Route path="/" element={<AdminDashboard />} />
-                    <Route path="/posts" element={<AdminPosts />} />
-                    <Route path="/posts/create" element={<AdminCreatePost />} />
-                    <Route path="/posts/edit/:postId" element={<AdminEditPost />} />
-                    <Route path="/web-stories" element={<AdminWebStories />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                  </Routes>
+                  <AdminDashboard />
                 </AdminLayout>
               </TooltipProvider>
             } />
+            <Route path="/admin/posts" element={
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <AdminLayout>
+                  <AdminPosts />
+                </AdminLayout>
+              </TooltipProvider>
+            } />
+            <Route path="/admin/posts/create" element={
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <AdminLayout>
+                  <AdminCreatePost />
+                </AdminLayout>
+              </TooltipProvider>
+            } />
+            <Route path="/admin/posts/edit/:postId" element={
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <AdminLayout>
+                  <AdminEditPost />
+                </AdminLayout>
+              </TooltipProvider>
+            } />
+            <Route path="/admin/web-stories" element={
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <AdminLayout>
+                  <AdminWebStories />
+                </AdminLayout>
+              </TooltipProvider>
+            } />
+            
+            {/* Redirect from root to default language */}
+            <Route path="/" element={<Navigate to="/pt" replace />} />
             
             {/* Language routes */}
             <Route path="/:lang/*" element={
