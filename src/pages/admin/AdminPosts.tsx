@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
@@ -21,7 +22,8 @@ const AdminPosts: React.FC = () => {
     try {
       setLoading(true);
       
-      let query = supabase
+      // Updated query to properly fetch posts with their translations
+      const { data, error } = await supabase
         .from('posts')
         .select(`
           *,
@@ -30,11 +32,13 @@ const AdminPosts: React.FC = () => {
         `)
         .order('created_at', { ascending: false });
       
-      const { data, error } = await query;
+      if (error) {
+        throw error;
+      }
       
-      if (error) throw error;
+      console.log("Fetched posts:", data);
       
-      // Transform the data to ensure category_translations is always an array
+      // Ensure category_translations is always an array
       const transformedData = data?.map(post => ({
         ...post,
         category_translations: Array.isArray(post.category_translations) 

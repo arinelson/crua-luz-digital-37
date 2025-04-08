@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { Category, CategoryTranslation, Post, PostTranslation, WebStory, WebStoryTranslation, Contact, NewsletterSubscriber } from '@/types/supabase';
 
@@ -24,6 +23,7 @@ export const supabaseService = {
   // Posts
   async getFeaturedPosts(language: string, limit = 3): Promise<Post[]> {
     try {
+      console.log(`Fetching featured posts for language: ${language}`);
       const { data: posts, error } = await supabase
         .from('posts')
         .select(`
@@ -40,6 +40,8 @@ export const supabaseService = {
         console.error('Error fetching featured posts:', error);
         return [];
       }
+
+      console.log('Featured posts data:', posts);
 
       // Process the data to match our Post type
       const processedPosts = posts?.map(post => ({
@@ -73,6 +75,7 @@ export const supabaseService = {
 
   async getRecentPosts(language: string, limit = 2): Promise<Post[]> {
     try {
+      console.log(`Fetching recent posts for language: ${language}`);
       const { data: posts, error } = await supabase
         .from('posts')
         .select(`
@@ -88,6 +91,8 @@ export const supabaseService = {
         console.error('Error fetching recent posts:', error);
         return [];
       }
+
+      console.log('Recent posts data:', posts);
 
       // Process the data to match our Post type
       const processedPosts = posts?.map(post => ({
@@ -121,6 +126,7 @@ export const supabaseService = {
 
   async getPostsByCategory(language: string, categorySlug: string): Promise<Post[]> {
     try {
+      console.log(`Fetching posts for category ${categorySlug} in language: ${language}`);
       const { data: posts, error } = await supabase
         .from('posts')
         .select(`
@@ -136,6 +142,8 @@ export const supabaseService = {
         console.error(`Error fetching posts for category ${categorySlug}:`, error);
         return [];
       }
+
+      console.log('Posts by category data:', posts);
 
       // Process the data to match our Post type
       const processedPosts = posts?.map(post => ({
@@ -169,6 +177,7 @@ export const supabaseService = {
 
   async getAllPosts(language: string): Promise<Post[]> {
     try {
+      console.log(`Fetching all posts for language: ${language}`);
       const { data: posts, error } = await supabase
         .from('posts')
         .select(`
@@ -183,6 +192,8 @@ export const supabaseService = {
         console.error('Error fetching all posts:', error);
         return [];
       }
+
+      console.log('All posts data:', posts);
 
       // Process the data to match our Post type
       const processedPosts = posts?.map(post => ({
@@ -216,6 +227,7 @@ export const supabaseService = {
 
   async getPostBySlug(language: string, slug: string): Promise<Post | null> {
     try {
+      console.log(`Fetching post with slug ${slug} in language: ${language}`);
       const { data: post, error } = await supabase
         .from('posts')
         .select(`
@@ -231,6 +243,8 @@ export const supabaseService = {
         console.error(`Error fetching post with slug ${slug}:`, error);
         return null;
       }
+
+      console.log('Post by slug data:', post);
 
       // Initialize with empty category_translations array
       const processedPost = {
