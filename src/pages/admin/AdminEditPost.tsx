@@ -1,12 +1,13 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
-import { Editor } from '@tinymce/tinymce-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
+import SimpleEditor from '@/components/admin/SimpleEditor';
+import ContentPreview from '@/components/admin/ContentPreview';
 import {
   Form,
   FormControl,
@@ -25,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2 } from 'lucide-react';
 
@@ -52,8 +54,6 @@ const AdminEditPost: React.FC = () => {
   const [contentPt, setContentPt] = useState('');
   const [contentEn, setContentEn] = useState('');
   const [translationIds, setTranslationIds] = useState<{pt: string, en: string}>({ pt: '', en: '' });
-  const editorRefPt = useRef<any>(null);
-  const editorRefEn = useRef<any>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -286,7 +286,6 @@ const AdminEditPost: React.FC = () => {
       
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {/* O formulário é idêntico ao do AdminCreatePost, apenas o título e a ação do botão mudam */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-6">
               <FormField
@@ -324,26 +323,22 @@ const AdminEditPost: React.FC = () => {
               <div>
                 <FormLabel>Conteúdo (Português)</FormLabel>
                 <div className="mt-1">
-                  <Editor
-                    apiKey="no-api-key"
-                    onInit={(evt, editor) => editorRefPt.current = editor}
-                    init={{
-                      height: 400,
-                      menubar: true,
-                      plugins: [
-                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                      ],
-                      toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | alignleft aligncenter ' +
-                        'alignright alignjustify | bullist numlist outdent indent | ' +
-                        'removeformat | help',
-                      content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                    value={contentPt}
-                    onEditorChange={setContentPt}
-                  />
+                  <Tabs defaultValue="editor">
+                    <TabsList className="mb-2">
+                      <TabsTrigger value="editor">Editor</TabsTrigger>
+                      <TabsTrigger value="preview">Prévia</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="editor">
+                      <SimpleEditor
+                        initialValue={contentPt}
+                        onChange={setContentPt}
+                        placeholder="Escreva o conteúdo do post em português..."
+                      />
+                    </TabsContent>
+                    <TabsContent value="preview">
+                      <ContentPreview content={contentPt} />
+                    </TabsContent>
+                  </Tabs>
                 </div>
               </div>
             </div>
@@ -384,26 +379,22 @@ const AdminEditPost: React.FC = () => {
               <div>
                 <FormLabel>Conteúdo (Inglês)</FormLabel>
                 <div className="mt-1">
-                  <Editor
-                    apiKey="no-api-key"
-                    onInit={(evt, editor) => editorRefEn.current = editor}
-                    init={{
-                      height: 400,
-                      menubar: true,
-                      plugins: [
-                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                      ],
-                      toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | alignleft aligncenter ' +
-                        'alignright alignjustify | bullist numlist outdent indent | ' +
-                        'removeformat | help',
-                      content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                    value={contentEn}
-                    onEditorChange={setContentEn}
-                  />
+                  <Tabs defaultValue="editor">
+                    <TabsList className="mb-2">
+                      <TabsTrigger value="editor">Editor</TabsTrigger>
+                      <TabsTrigger value="preview">Prévia</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="editor">
+                      <SimpleEditor
+                        initialValue={contentEn}
+                        onChange={setContentEn}
+                        placeholder="Escreva o conteúdo do post em inglês..."
+                      />
+                    </TabsContent>
+                    <TabsContent value="preview">
+                      <ContentPreview content={contentEn} />
+                    </TabsContent>
+                  </Tabs>
                 </div>
               </div>
             </div>

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
@@ -8,11 +9,39 @@ import {
 import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { Post } from '@/types/supabase';
 import { Input } from '@/components/ui/input';
 
+interface PostTranslation {
+  id: string;
+  post_id: string;
+  language: string;
+  title: string;
+  summary: string;
+  content: string;
+}
+
+interface CategoryTranslation {
+  id: string;
+  category_id: string;
+  language: string;
+  name: string;
+}
+
+interface Post {
+  id: string;
+  slug: string;
+  image_url: string;
+  category_id: string;
+  read_time: number;
+  featured: boolean;
+  created_at: string;
+  published_at: string;
+  post_translations: PostTranslation[];
+  category_translations: CategoryTranslation[];
+}
+
 const AdminPosts: React.FC = () => {
-  const [posts, setPosts] = useState<any[]>([]); // Modificado para any[] para evitar erros de tipo
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
